@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct IntroView: View {
+    var onStart: () -> Void = {}
+    
     private let features = [
         ("01", "주 1회", "매주, 딱 한 번의 인연"),
         ("02", "단 한 명", "고르지 않아요, 골라 드려요"),
@@ -77,7 +79,7 @@ struct IntroView: View {
             
             Spacer()
 
-            PrimaryButton(text: "시작하기")
+            PrimaryButton(text: "시작하기", action: onStart)
         }
         .padding(24)
     }
