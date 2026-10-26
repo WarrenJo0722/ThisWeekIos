@@ -134,7 +134,9 @@ struct ApplyView: View {
             .scrollIndicators(.hidden)
             
             // 버튼 영역
-            PrimaryButton(text: "이번 주 신청하기", action: onApply)
+            PrimaryButton(text: "이번 주 신청하기") {
+                
+            }
             .disabled(!isAgreed)
             .padding(.horizontal, 24)
             .padding(.bottom, 16)

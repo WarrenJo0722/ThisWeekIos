@@ -15,6 +15,7 @@ enum Route: Hashable {
 struct AppRouter: View {
     @State private var path: [Route] = []
     @State private var matchViewModel = MatchViewModel()
+    @State private var userViewModel = UserViewModel()
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -43,6 +44,10 @@ struct AppRouter: View {
             }
         }
         .environment(matchViewModel)
+        .environment(userViewModel)
+        .onAppear {
+            userViewModel.listenUsers()
+        }
     }
 }
 

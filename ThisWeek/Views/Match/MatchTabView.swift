@@ -27,4 +27,5 @@ struct MatchTabView: View {
 
 #Preview {
     MatchTabView()
+        .environment(MatchViewModel())
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Place: String, CaseIterable {
+enum Place: String, CaseIterable, Codable {
     case gangnam = "GANGNAM"
     case hongdae = "HONGDAE"
     case nowon = "NOWON"
