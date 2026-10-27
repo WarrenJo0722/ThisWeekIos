@@ -8,19 +8,25 @@
 import SwiftUI
 
 struct MatchTabView: View {
-    @Environment(MatchViewModel.self)
-    private var matchViewModel
+    @Environment(MatchViewModel.self) private var matchViewModel
+    @Environment(UserViewModel.self) private var userViewModel
     
     var body: some View {
-        switch matchViewModel.phase {
-        case .apply:
-            ApplyView() {
-                matchViewModel.apply()
+        if let userId = userViewModel.currentUserId {
+            switch matchViewModel.phase(userId: userId) {
+            case .apply:
+                ApplyView()
+            case .waiting:
+                Text("대기 화면")
+            case .matched:
+                ProfileView()
             }
-        case .waiting:
-            Text("대기 화면")
-        case .matched:
-            ProfileView()
+        } else {
+            ContentUnavailableView(
+                "회원을 먼저 선택해 주세요.",
+                systemImage: "person.crop.circle.badge.questionmark",
+                description: Text("관리자 → 회원 목록에서 고를 수 있어요.")
+            )
         }
     }
 }
@@ -28,4 +34,5 @@ struct MatchTabView: View {
 #Preview {
     MatchTabView()
         .environment(MatchViewModel())
+        .environment(UserViewModel())
 }

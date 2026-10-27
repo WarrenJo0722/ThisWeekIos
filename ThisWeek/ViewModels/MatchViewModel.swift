@@ -16,19 +16,48 @@ enum MatchPhase {
 
 @Observable
 class MatchViewModel {
-    var isApplied = false
-    var isMatched = false
+    var apps: [Application] = []
     
     var week = 1
     
-    var phase: MatchPhase {
-        if isMatched {
-            return .matched
+    @ObservationIgnored
+    private var listener: ListenerRegistration?
+    
+    func listenApps() {
+        guard listener == nil else { return }
+        listener = Firestore.firestore()
+            .collection("applications")
+            .addSnapshotListener { snapshot, error in
+                guard let snapshot else {
+                    print("신청 목록 불러오기 실패: \(error?.localizedDescription ?? "")")
+                    return
+                }
+                self.apps = snapshot.documents.compactMap { doc in
+                    try? doc.data(as: Application.self)
+                }
+            }
+    }
+    
+    func phase(userId: String) -> MatchPhase {
+        guard let app = findApp(userId: userId) else {
+            return .apply
         }
-        if isApplied {
+        if app.matchId.isEmpty {
             return .waiting
         }
-        return .apply
+        return .matched
+    }
+    
+    func findApp(userId: String) -> Application? {
+        apps.first { $0.userId == userId }
+    }
+    
+    func findPartnerApp(myApp: Application) -> Application? {
+        guard !myApp.matchId.isEmpty else { return nil }
+        return apps.first {
+            $0.matchId == myApp.matchId
+            && $0.userId != myApp.userId
+        }
     }
     
     func apply(
@@ -48,7 +77,8 @@ class MatchViewModel {
         do {
             try Firestore.firestore()
                 .collection("applications")
-                .addDocument(from: app) { error in
+                .document("\(week)_\(userId)")
+                .setData(from: app) { error in
                     if let error {
                         onFailure(error.localizedDescription)
                     } else {
@@ -58,12 +88,42 @@ class MatchViewModel {
         } catch {
             onFailure(error.localizedDescription)
         }
-        
-        
-        isApplied = true
     }
     
-    func match() {
-        isMatched = true
+    func match(
+        male: Application,
+        female: Application,
+        onSuccess: @escaping () -> Void = {},
+        onFailure: @escaping (String) -> Void = { _ in }
+    ) {
+        let db = Firestore.firestore()
+        let matchId = "\(week)_\(male.userId)_\(female.userId)"
+        
+        let match = Match(
+            week: week, user1id: male.userId, user2id: female.userId, place: male.place, weekday: male.weekday
+        )
+        
+        // Match 정보 저장
+        // 남성 신청서에 matchId 업데이트
+        // 여성 신청서에 matchId 업데이트
+        let batch = db.batch()
+        // add: 없던 것 새로 더할 때 : 생성, 추가
+        // set: 기존에 있던 것을 통째로 바꿀 때 / 만약 기존 것이 없으면 새로 추가함.
+        // update: 객체 안에 있는 필드 하나만 추가하거나 업데이트 할때
+        do {
+            try batch.setData(from: match, forDocument: db.collection("matches").document(matchId))
+        } catch {
+            onFailure(error.localizedDescription)
+            return
+        }
+        batch.updateData(["matchId": matchId], forDocument: db.collection("applications").document("\(week)_\(male.userId)"))
+        batch.updateData(["matchId": matchId], forDocument: db.collection("applications").document("\(week)_\(female.userId)"))
+        batch.commit { error in
+            if let error {
+                onFailure(error.localizedDescription)
+            } else {
+                onSuccess()
+            }
+        }
     }
 }

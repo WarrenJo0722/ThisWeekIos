@@ -39,9 +39,7 @@ struct AdminView: View {
             }
             
             NavigationLink("매칭하기") {
-                Button("매칭하기") {
-                    matchViewModel.match()
-                }
+                MatchAdminView()
             }
         }
         .navigationTitle("관리자")

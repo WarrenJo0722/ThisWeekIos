@@ -7,5 +7,12 @@
 		<string>NotoSerifKR-Bold.ttf</string>
 		<string>NotoSerifKR-Regular.ttf</string>
 	</array>
+    <key>UILaunchScreen</key>
+    <dict>
+        <key>UIColorName</key>
+        <string>LaunchColor</string>
+        <key>UIImageName</key>
+        <string>LaunchImage</string>
+    </dict>
 </dict>
 </plist>

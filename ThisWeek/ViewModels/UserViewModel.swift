@@ -11,11 +11,16 @@ import FirebaseFirestore
 @Observable
 class UserViewModel {
     var users: [User] = []
-    var currentUserId: String?
+    var currentUserId: String? = UserDefaults.standard.string(forKey: "currentUserId") {
+        didSet {
+            UserDefaults.standard.set(currentUserId, forKey: "currentUserId")
+        }
+    }
     var currentUser: User? {
         users.first { $0.id == currentUserId }
     }
     
+    @ObservationIgnored
     private var listener: ListenerRegistration?
     
     func listenUsers() {
@@ -64,5 +69,9 @@ class UserViewModel {
         if currentUserId == id {
             currentUserId = nil
         }
+    }
+    
+    func findUser(id: String) -> User? {
+        users.first { $0.id == id }
     }
 }

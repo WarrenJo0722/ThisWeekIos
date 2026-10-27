@@ -8,16 +8,19 @@
 import SwiftUI
 
 struct ApplyView: View {
-    var onApply: () -> Void = {}
+    @Environment(MatchViewModel.self) private var matchViewModel
+    @Environment(UserViewModel.self) private var userViewModel
     
     @State private var selectedWeekday: Weekday = .saturday
     @State private var selectedPlace: Place = .gangnam
     @State private var isAgreed: Bool = false
     
+    @State private var errorMessage = ""
+    @State private var showError = false
+    
     var body: some View {
         VStack {
             // 본문 영역
-            
             ScrollView {
                 VStack(alignment: .leading) {
                     HStack {
@@ -135,15 +138,32 @@ struct ApplyView: View {
             
             // 버튼 영역
             PrimaryButton(text: "이번 주 신청하기") {
+                guard let userId = userViewModel.currentUserId else {
+                    errorMessage = "관리자 화면에서 회원을 먼저 선택해 주세요."
+                    showError = true
+                    return
+                }
                 
+                matchViewModel.apply(
+                    userId: userId,
+                    weekday: selectedWeekday,
+                    place: selectedPlace
+                )
             }
             .disabled(!isAgreed)
             .padding(.horizontal, 24)
             .padding(.bottom, 16)
+        }
+        .alert("신청 실패", isPresented: $showError) {
+            Button("확인", role: .cancel) {}
+        } message: {
+            Text(errorMessage)
         }
     }
 }
 
 #Preview {
     ApplyView()
+        .environment(MatchViewModel())
+        .environment(UserViewModel())
 }

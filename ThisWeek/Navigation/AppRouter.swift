@@ -47,6 +47,7 @@ struct AppRouter: View {
         .environment(userViewModel)
         .onAppear {
             userViewModel.listenUsers()
+            matchViewModel.listenApps()
         }
     }
 }

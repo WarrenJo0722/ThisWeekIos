@@ -8,10 +8,10 @@
 import Foundation
 
 enum Place: String, CaseIterable, Codable {
-    case gangnam = "GANGNAM"
-    case hongdae = "HONGDAE"
+    case gangnam = "GANG"
+    case hongdae = "HONG"
     case nowon = "NOWON"
-    case yeongdeungpo = "YEONGDEUNGPO"
+    case yeongdeungpo = "YEONG"
     
     var label: String {
         switch self {

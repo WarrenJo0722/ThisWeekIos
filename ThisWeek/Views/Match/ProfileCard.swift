@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ProfileCard: View {
+    let user: User
     let isBlurred: Bool
     
     var body: some View {
@@ -31,14 +32,14 @@ struct ProfileCard: View {
             
             VStack(alignment: .leading) {
                 HStack(alignment: .bottom) {
-                    profileText("제나", font: .title2)
-                    profileText("19")
+                    profileText(user.nick, font: .title2)
+                    profileText("\(user.age)")
                 }
                 .padding(.bottom, 2)
-                profileText("직업: 가수")
-                profileText("MBTI: ENFP")
+                profileText("직업: \(user.job)")
+                profileText("MBTI: \(user.mbti)")
                     .padding(.bottom, 2)
-                profileText("까엉!")
+                profileText(user.greeting)
             }
             .padding()
         }
@@ -66,7 +67,10 @@ struct ProfileCard: View {
 }
 
 #Preview {
-    ProfileCard(isBlurred: true)
+    ProfileCard(
+        user: User(nick: "제나", email: "", age: 19, gender: .female, job: "가수", mbti: "ENFP", greeting: "까엉!"),
+        isBlurred: true
+    )
         .padding()
 }
 
