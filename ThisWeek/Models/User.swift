@@ -18,6 +18,7 @@ struct User: Codable, Identifiable {
     var job: String
     var mbti: String
     var greeting: String
+    var imageUrl: String?
 }
 
 enum Gender: String, CaseIterable, Codable {

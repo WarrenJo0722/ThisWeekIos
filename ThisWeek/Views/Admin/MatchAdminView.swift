@@ -57,10 +57,7 @@ struct MatchAdminView: View {
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
             PrimaryButton(text: "매칭하기") {
-                guard let maleApp, let femaleApp else {
-                    return
-                }
-                matchViewModel.match(male: maleApp, female: femaleApp)
+                match()
             }
             .padding()
         }

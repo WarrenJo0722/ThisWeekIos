@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct MainView: View {
+    var onLogout: () -> Void = {}
+    
     var body: some View {
         TabView {
             MatchTabView()
@@ -18,10 +20,10 @@ struct MainView: View {
                 .tabItem {
                     Label("대화", systemImage: "bubble.left.and.bubble.right")
                 }
-            Text("마이페이지 화면")
-                .tabItem {
-                    Label("마이", systemImage: "person")
-                }
+            MyPageView(onLogout: onLogout)
+            .tabItem {
+                Label("마이", systemImage: "person")
+            }
         }
     }
 }
