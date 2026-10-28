@@ -11,6 +11,8 @@ struct ProfileView: View {
     @Environment(MatchViewModel.self) private var matchViewModel
     @Environment(UserViewModel.self) private var userViewModel
     
+    var onChat: () -> Void = {}
+    
     @State private var isProfileBlurred = true
     
     private var partner: User? {
@@ -43,8 +45,10 @@ struct ProfileView: View {
             
             Spacer()
             
-            PrimaryButton(text: "대화하기")
-                .padding(.bottom, 4)
+            PrimaryButton(text: "대화하기") {
+                onChat()
+            }
+            .padding(.bottom, 4)
             PrimaryButton(text: "만남완료") {
                 withAnimation {
                     isProfileBlurred = false

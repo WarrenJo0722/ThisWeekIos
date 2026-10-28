@@ -16,10 +16,18 @@ struct ProfileCard: View {
             Color.clear
                 .frame(height: 500)
                 .overlay {
-                    Image(.zena)
-                        .resizable()
-                        .scaledToFill()
-                        .blur(radius: isBlurred ? 16 : 0)
+                    AsyncImage(
+                        url: URL(string: user.imageUrl ?? "")
+                    ) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    } placeholder: {
+                        Image(systemName: "person.fill")
+                            .font(.system(size: 50))
+                            .foregroundStyle(.secondary)
+                    }
+                    .blur(radius: isBlurred ? 16 : 0)
                 }
                 .overlay {
                     LinearGradient(

@@ -137,6 +137,7 @@ class UserViewModel {
                     if let error {
                         onFailure(error.localizedDescription)
                     } else {
+                        self.currentUserId = uid
                         onSuccess()
                     }
                 }

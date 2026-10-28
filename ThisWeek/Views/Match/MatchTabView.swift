@@ -11,6 +11,8 @@ struct MatchTabView: View {
     @Environment(MatchViewModel.self) private var matchViewModel
     @Environment(UserViewModel.self) private var userViewModel
     
+    var onChat: () -> Void = {}
+    
     var body: some View {
         if let userId = userViewModel.currentUserId {
             switch matchViewModel.phase(userId: userId) {
@@ -19,7 +21,7 @@ struct MatchTabView: View {
             case .waiting:
                 Text("대기 화면")
             case .matched:
-                ProfileView()
+                ProfileView(onChat: onChat)
             }
         } else {
             ContentUnavailableView(

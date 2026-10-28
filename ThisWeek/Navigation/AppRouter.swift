@@ -12,6 +12,7 @@ enum Route: Hashable {
     case admin
     case signUp
     case login
+    case chatRoom
 }
 
 struct AppRouter: View {
@@ -53,9 +54,10 @@ struct AppRouter: View {
             .navigationDestination(for: Route.self) { route in
                 switch route {
                 case .main:
-                    MainView() {
-                        path.removeAll()
-                    }
+                    MainView(
+                        onLogout: { path.removeAll() },
+                        onChat: { path.append(.chatRoom) }
+                    )
                 case .admin:
                     AdminView()
                 case .login:
@@ -69,6 +71,8 @@ struct AppRouter: View {
                         // path: [.main]
                         path = [.main]
                     }
+                case .chatRoom:
+                    ChatRoomView()
                 }
             }
         }
